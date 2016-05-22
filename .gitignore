@@ -1,7 +1,14 @@
+# Ignore
+celerybeat-schedule
+celerybeat-schedule.db
+dump.rdb
+log
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+*.swp
 
 # C extensions
 *.so

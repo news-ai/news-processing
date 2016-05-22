@@ -26,8 +26,8 @@ def get_login_token(from_discovery):
         "accept": "application/json"
     }
     payload = {
-        "username": os.environ.get("NEWSAI_CONTEXT_API_USERNAME"),
-        "password": os.environ.get("NEWSAI_CONTEXT_API_PASSWORD"),
+        "username": config.CONTEXT_API_USERNAME,
+        "password": config.CONTEXT_API_PASSWORD,
     }
 
     context_url = base_url

@@ -14,6 +14,7 @@ from middleware.config import (
     SENTRY_APP_ID,
 )
 from processing.process_article import process_article
+from taskrunner import app as celery_app
 
 # Setting up Flask and API
 app = Flask(__name__)
@@ -40,9 +41,11 @@ class Processing(Resource):
 
     def post(self):
         args = parser.parse_args()
-        return process_article(args)
+        res = celery_app.send_task(
+            'processing.process_article.process_article', ([args]))
+        return jsonify({'id': res.task_id})
 
 api.add_resource(Processing, '/processing')
 
 if __name__ == '__main__':
-    app.run(port=int('8000'), debug=False)
+    app.run(port=int('8000'), debug=True)

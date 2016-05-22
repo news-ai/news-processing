@@ -11,7 +11,7 @@ from processing.internal.context import (
     read_article_without_author,
     post_article_without_author,
 )
-from middleware.config import CONTEXT_BASE_URL
+from middleware.config import BASE_URL
 
 
 @app.task
@@ -32,8 +32,8 @@ def process_article(args):
         True)
     article = read_article_without_author(args['url'])
     article['authors'] = []
-    if 'added_by' in args and len(args['added_by']) is not 0:
-        article['added_by'] = CONTEXT_BASE_URL + '/users/' + \
+    if 'added_by' in args and args['added_by'] is not None:
+        article['added_by'] = BASE_URL + '/users/' + \
             str(args['added_by']) + '/'
     articles = []
     articles.append(article)
