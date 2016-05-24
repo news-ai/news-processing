@@ -48,4 +48,4 @@ class Processing(Resource):
 api.add_resource(Processing, '/processing')
 
 if __name__ == '__main__':
-    app.run(port=int('8000'), debug=True)
+    app.run(port=int('8000'), debug=False)
