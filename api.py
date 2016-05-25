@@ -41,6 +41,8 @@ class Processing(Resource):
 
     def post(self):
         args = parser.parse_args()
+        if 'added_by' in args and args['added_by'] is not None:
+            return process_article(args)
         res = celery_app.send_task(
             'processing.process_article.process_article', ([args]))
         return jsonify({'id': res.task_id})
