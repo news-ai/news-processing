@@ -9,3 +9,7 @@ Start Redis: `redis-server`
 Check if it's running: `redis-cli ping`
 
 To run a purge on current tasks: `celery -A taskrunner purge`
+
+### To do
+
+1. Add layer for MongoDB to check if article has been processed before
