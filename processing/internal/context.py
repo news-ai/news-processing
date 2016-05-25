@@ -116,7 +116,7 @@ def post_article_without_author(article, token, from_discovery):
     if from_discovery:
         context_url = context_base_url
 
-    payload = [article]
+    payload = article
 
     r = requests.post(context_url + '/articles/',
                       headers=headers, data=json.dumps(payload), verify=False)
