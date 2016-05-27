@@ -36,7 +36,11 @@ def process_article(args):
         token,
         from_discovery)
 
-    article = read_article_without_author(args['url'])
+    # HTTPS requires a verify. Simple fix for now.
+    article_url = args['url']
+    article_url = article_url.replace('https://', 'http://')
+
+    article = read_article_without_author(article_url)
     article['authors'] = []
     if from_discovery:
         article['added_by'] = BASE_URL + '/users/' + \
