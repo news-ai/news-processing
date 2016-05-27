@@ -2,7 +2,7 @@
 from datetime import timedelta
 
 #
-from middlewar.config import (
+from middleware.config import (
     EMAIL_HOST,
     EMAIL_PORT,
     EMAIL_USERNAME,
