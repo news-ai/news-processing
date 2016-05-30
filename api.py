@@ -34,6 +34,7 @@ logger.addHandler(handler)
 parser = reqparse.RequestParser()
 parser.add_argument('url')
 parser.add_argument('added_by')
+parser.add_argument('rss_id')
 
 
 # Route to POST data for news processing
