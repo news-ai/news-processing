@@ -44,7 +44,9 @@ def process_article(args):
     article['authors'] = []
 
     if 'rss_id' in args and args['rss_id'] is not None:
-        article['publisher_feed'] = args['rss_id']
+        publisher_feed_url = BASE_URL + \
+            '/publisherfeeds/' + str(args['rss_id']) + '/'
+        article['publisher_feed'] = publisher_feed_url
 
     if from_discovery:
         article['added_by'] = BASE_URL + '/users/' + \
