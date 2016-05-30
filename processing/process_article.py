@@ -8,8 +8,10 @@ from taskrunner import app
 from processing.internal.context import (
     get_login_token,
     post_publisher,
-    read_article_without_author,
     post_article_without_author,
+)
+from processing.articles import (
+    read_article_without_author,
 )
 from middleware.config import BASE_URL
 
@@ -20,7 +22,7 @@ def process_article(args):
     url = urlparse(args['url']).netloc
     name = [w for w in url.split('.')
             if w not in stops][0]
-    short_name = name[0:5]
+    short_name = name[0:5].upper()
     is_approved = False
     token = get_login_token(True)
 

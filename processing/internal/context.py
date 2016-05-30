@@ -3,14 +3,12 @@ from __future__ import print_function
 import json
 import os
 
-# Third-party app imports
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
-from newspaper import Article
 
 # Imports from app
 from middleware import config
-from processing.utils.urls import url_validate
+from processing.articles import read_article
 
 # Removing requests warning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -18,6 +16,12 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 # Importing URL
 base_url = config.BASE_URL
 context_base_url = config.CONTEXT_BASE_URL
+
+
+def is_author_valid(author_name):
+    if len(author_name.split(' ')) > 3:
+        return False
+    return True
 
 
 def get_login_token(from_discovery):
@@ -39,46 +43,6 @@ def get_login_token(from_discovery):
     data = json.loads(r.text)
     token = data.get('token')
     return token
-
-
-# checking if author exists takes 3 API calls
-# we don't want to run into max requests limit issues when we batch process
-def read_article_without_author(url):
-    article = Article(url)
-    article.download()
-    article.parse()
-    article.nlp()
-
-    url, publisher = url_validate(url)
-
-    data = {}
-    data['url'] = url
-    data['name'] = article.title  # Get Title
-    if article.publish_date:
-        data['created_at'] = str(article.publish_date)
-    data['header_image'] = article.top_image
-    data['basic_summary'] = article.summary
-    data['opening_paragraph'] = article.opening_paragraph
-    return data
-
-
-def read_article(url, token):
-    article = Article(url)
-    article.download()
-    article.parse()
-    article.nlp()
-
-    url, publisher = url_validate(url)
-
-    data = {}
-    data['url'] = url
-    data['name'] = article.title  # Get Title
-    if article.publish_date:
-        data['created_at'] = str(article.publish_date)
-    data['header_image'] = article.top_image
-    data['basic_summary'] = article.summary
-    data['authors'] = post_author(publisher, article.authors, token)
-    return data
 
 
 def post_article(url, token):
@@ -121,12 +85,6 @@ def post_article_without_author(article, token, from_discovery):
     r = requests.post(context_url + '/articles/',
                       headers=headers, data=json.dumps(payload), verify=False)
     return r
-
-
-def is_author_valid(author_name):
-    if len(author_name.split(' ')) > 3:
-        return False
-    return True
 
 
 def post_author(publisher, authors, token):
