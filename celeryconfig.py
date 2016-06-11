@@ -1,7 +1,7 @@
 # Stdlib imports
 from datetime import timedelta
 
-#
+# Imports from app
 from middleware.config import (
     EMAIL_HOST,
     EMAIL_PORT,
