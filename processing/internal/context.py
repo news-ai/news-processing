@@ -3,12 +3,14 @@ from __future__ import print_function
 import json
 import os
 
+# Third-party app imports
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 # Imports from app
 from middleware import config
 from processing.articles import read_article
+from processing.process_publisher import get_publisher_title
 
 # Removing requests warning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -26,19 +28,19 @@ def is_author_valid(author_name):
 
 def get_login_token(from_discovery):
     headers = {
-        "content-type": "application/json",
-        "accept": "application/json"
+        'content-type': 'application/json',
+        'accept': 'application/json'
     }
     payload = {
-        "username": config.CONTEXT_API_USERNAME,
-        "password": config.CONTEXT_API_PASSWORD,
+        'username': config.CONTEXT_API_USERNAME,
+        'password': config.CONTEXT_API_PASSWORD,
     }
 
     context_url = base_url
     if from_discovery:
         context_url = context_base_url
 
-    r = requests.post(context_url + "/jwt-token/",
+    r = requests.post(context_url + '/jwt-token/',
                       headers=headers, data=json.dumps(payload), verify=False)
     data = json.loads(r.text)
     token = data.get('token')
@@ -50,9 +52,9 @@ def post_article(url, token):
         print('Missing token')
         return
     headers = {
-        "content-type": "application/json",
-        "accept": "application/json",
-        "authorization": "Bearer " + token
+        'content-type': 'application/json',
+        'accept': 'application/json',
+        'authorization': 'Bearer ' + token
     }
 
     payload = read_article(url, token)
@@ -71,9 +73,9 @@ def post_article_without_author(article, token, from_discovery):
         return
 
     headers = {
-        "content-type": "application/json",
-        "accept": "application/json",
-        "authorization": "Bearer " + token
+        'content-type': 'application/json',
+        'accept': 'application/json',
+        'authorization': 'Bearer ' + token
     }
 
     context_url = base_url
@@ -96,9 +98,9 @@ def post_author(publisher, authors, token):
         return []
 
     headers = {
-        "content-type": "application/json",
-        "accept": "application/json",
-        "authorization": "Bearer " + token
+        'content-type': 'application/json',
+        'accept': 'application/json',
+        'authorization': 'Bearer ' + token
     }
 
     author_list = []
@@ -134,19 +136,21 @@ def post_publisher(url, name, short_name, is_approved, token, from_discovery):
         return
 
     headers = {
-        "content-type": "application/json",
-        "accept": "application/json",
-        "authorization": "Bearer " + token
+        'content-type': 'application/json',
+        'accept': 'application/json',
+        'authorization': 'Bearer ' + token
     }
 
     context_url = base_url
     if from_discovery:
         context_url = context_base_url
 
+    publisher_website_name = get_publisher_title(url)
+
     payload = {
-        "url": url,
-        'name': name,
-        'short_name': short_name,
+        'url': url,
+        'name': publisher_website_name if publisher_website_name else name,
+        'short_name': short_name.upper(),
         'is_approved': is_approved
     }
 
@@ -161,9 +165,9 @@ def get_publisher(token):
         return
 
     headers = {
-        "content-type": "application/json",
-        "accept": "application/json",
-        "authorization": "Bearer " + token
+        'content-type': 'application/json',
+        'accept': 'application/json',
+        'authorization': 'Bearer ' + token
     }
 
     r = requests.get(base_url + '/publisherfeeds/?limit=1000', headers=headers,
